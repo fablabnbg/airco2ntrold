@@ -49,7 +49,8 @@ if __name__ == "__main__":
 	"""main"""
 
 	key = [0xc4, 0xc6, 0xc0, 0x92, 0x40, 0x23, 0xdc, 0x96]
-	fp = open(sys.argv[1], "a+b",  0)
+	#fp = open(sys.argv[1], "a+b",  0)
+	fp = open("/dev/hidraw0", "a+b",  0)
 	HIDIOCSFEATURE_9 = 0xC0094806
 	set_report = "\x00" + "".join(chr(e) for e in key)
 	fcntl.ioctl(fp, HIDIOCSFEATURE_9, set_report)
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 				if (co2 > 5000 or co2 < 0):
 					co2 = -1
 
-				if now() - stamp > 5:
+				if now() - stamp > 15:
 					print "CO2: %4i TMP: %3.1f" % (co2, tmp)
 					msgs = [{'topic':"lab/sensor/co2/co2", 'payload':co2, 'qos':0, 'retain':True},{'topic':"lab/sensor/co2/temperature", 'payload':tmp, 'qos':0, 'retain':True}]
 					publish.multiple(msgs, hostname="fabserver.fablab.lan", client_id="co2")
